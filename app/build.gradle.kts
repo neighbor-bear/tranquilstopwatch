@@ -5,14 +5,14 @@ plugins {
 
 android {
     namespace = "tibarj.tranquilstopwatch"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "tibarj.tranquilstopwatch"
         minSdk = 30
-        targetSdk = 34
-        versionCode = 2
-        versionName = "1.0.2"
+        targetSdk = 36
+        versionCode = 3
+        versionName = "1.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
