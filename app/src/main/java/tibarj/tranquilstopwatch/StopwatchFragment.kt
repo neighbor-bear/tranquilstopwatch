@@ -31,7 +31,6 @@ class StopwatchFragment : Fragment() {
     private var _anteriority: Long = 0 // ms, sum of all start-stop segments durations
     private var _showSeconds: Boolean = true
     private var _showSecondsWhenStarted: Boolean = true
-    private var _movement: Int = 0
 
     // This property is only valid between onCreateView and onDestroyView.
     val binding get() = _binding!!
@@ -96,20 +95,6 @@ class StopwatchFragment : Fragment() {
         val size = pref.getInt(getString(R.string.stopwatch_size_key), resources.getInteger(R.integer.default_stopwatch_size))
         Log.d(tag, "setStopwatchSize " + size.toString())
         binding.stopwatch.textSize = size.toFloat()
-
-        val movement = pref.getInt(
-            getString(R.string.stopwatch_movement_key),
-            resources.getInteger(R.integer.default_stopwatch_movement)
-        )
-        if (_movement != movement) {
-            Log.d(tag, "setStopwatchMovement " + movement.toString())
-            _movement = movement
-            if (0 == _movement) {
-                setMargins(0, 0)
-            } else {
-                changeMargins()
-            }
-        }
     }
 
     // visible but not interactable
@@ -213,15 +198,11 @@ class StopwatchFragment : Fragment() {
         )
         Log.d(tag, " >elapsed=$elapsed")
 
-        val s = elapsed.toInt() % 60
         setClock(
             TimeUnit.SECONDS.toHours(elapsed).toInt(),
             TimeUnit.SECONDS.toMinutes(elapsed).toInt() % 60,
-            s
+            elapsed.toInt() % 60
         )
-        if (s == 0 && 0 != _movement) {
-            changeMargins()
-        }
     }
 
     private fun setClock(h: Int, m: Int, s: Int) {
@@ -229,19 +210,6 @@ class StopwatchFragment : Fragment() {
         _binding?.stopwatch?.text =
             if (_showSeconds) getString(R.string.clock_h_mm_ss, h, m, s)
             else getString(R.string.clock_h_mm, h, m)
-    }
-
-    private fun changeMargins() {
-        Log.d(tag, "changeMargins")
-        val limit = 10 * _movement
-        setMargins(Random.nextInt(-limit, limit + 1), Random.nextInt(-limit, limit + 1))
-    }
-
-    private fun setMargins(h: Int, v: Int) {
-        Log.d(tag, "setMargins")
-        val layoutParams = (_binding?.stopwatchParent?.layoutParams as? MarginLayoutParams)
-        layoutParams?.setMargins(h, v, -h, -v)
-        _binding?.stopwatchParent?.layoutParams = layoutParams
     }
 
     private fun setColor(@ColorRes color: Int) {

@@ -5,9 +5,9 @@
     <string name="stopwatch_font_thin_key">stopwatch_font_thin_key</string>
     <string name="stopwatch_opacity_key">stopwatch_opacity_key</string>
     <string name="stopwatch_size_key">stopwatch_size_key</string>
-    <string name="stopwatch_movement_key">stopwatch_movement_key</string>
     <string name="clock_enabled_key">clock_enabled</string>
     <string name="clock_font_thin_key">clock_font_thin_key</string>
     <string name="clock_opacity_key">clock_opacity_key</string>
-    <string name="clock_movement_key">clock_movement_key</string>
+    <string name="clock_size_key">clock_size_key</string>
+    <string name="global_movement_key">global_movement_key</string>
 </resources>

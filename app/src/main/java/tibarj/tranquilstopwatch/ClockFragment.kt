@@ -21,8 +21,7 @@ class ClockFragment : Fragment() {
     private var _binding: ClockFragmentBinding? = null
     private var _runnable: Runnable? = null
     private val _handler = Handler(Looper.getMainLooper())
-    private var _movement: Int = 0
-    private var _showClock: Boolean = true
+    private var _enabled: Boolean = true
 
     // This property is only valid between onCreateView and onDestroyView.
     val binding get() = _binding!!
@@ -45,7 +44,7 @@ class ClockFragment : Fragment() {
         Log.d(tag, "applyPref")
 
         val pref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        _showClock = pref.getBoolean(
+        _enabled = pref.getBoolean(
             getString(R.string.clock_enabled_key),
             resources.getBoolean(R.bool.default_clock_enabled)
         )
@@ -64,19 +63,9 @@ class ClockFragment : Fragment() {
         Log.d(tag, "setClockOpacity " + opacity.toString())
         binding.clock.alpha = opacity.toFloat() / 20f
 
-        val movement = pref.getInt(
-            getString(R.string.clock_movement_key),
-            resources.getInteger(R.integer.default_clock_movement)
-        )
-        if (_movement != movement) {
-            Log.d(tag, "setClockMovement " + movement.toString())
-            _movement = movement
-            if (0 == _movement) {
-                setMargins(0, 0)
-            } else {
-                changeMargins()
-            }
-        }
+        val size = pref.getInt(getString(R.string.clock_size_key), resources.getInteger(R.integer.default_stopwatch_size))
+        Log.d(tag, "setClockSize " + size.toString())
+        binding.clock.textSize = size.toFloat()
     }
 
     // visible but not interactable
@@ -87,10 +76,11 @@ class ClockFragment : Fragment() {
         loadPref()
         logState()
 
-        if (_showClock) {
+        if (_enabled) {
             display()
             schedule()
         }
+        (requireActivity() as MainActivity).showClock(_enabled)
     }
 
     override fun onStop() {
@@ -113,31 +103,13 @@ class ClockFragment : Fragment() {
         Log.d(tag, "display")
         val formatter = DateTimeFormatter.ofPattern("HH:mm:ss")
         val times = LocalDateTime.now().format(formatter).split(':')
-        val s = times[2].toInt()
-        Log.d(tag, times[0]+':'+times[1]+':'+times[2])
+        Log.d(tag, times[0]+':'+times[1])
         _binding?.clock?.text = getString(R.string.clock_hh_mm, times[0], times[1])
-
-        if (s == 0 && 0 != _movement) {
-            changeMargins()
-        }
-    }
-
-    private fun changeMargins() {
-        Log.d(tag, "changeMargins")
-        val limit = 10 * _movement
-        setMargins(Random.nextInt(-limit, limit + 1), 0)
-    }
-
-    private fun setMargins(h: Int, v: Int) {
-        Log.d(tag, "setMargins")
-        val layoutParams = (_binding?.clockParent?.layoutParams as? MarginLayoutParams)
-        layoutParams?.setMargins(h, v, -h, -v)
-        _binding?.clockParent?.layoutParams = layoutParams
     }
 
     private fun logState() {
         Log.d(tag, "state={")
-        Log.d(tag, "  _showClock=" + _showClock.toString())
+        Log.d(tag, "  _enabled=" + _enabled.toString())
         Log.d(tag, "}")
     }
 
@@ -148,7 +120,7 @@ class ClockFragment : Fragment() {
     private fun schedule() {
         Log.d(tag, "schedule")
         // remaining ms time until next minute (10ms of safety)
-        val remainingMs = 5000L//60_010 - System.currentTimeMillis() % 60_000
+        val remainingMs = 60_010 - System.currentTimeMillis() % 60_000
         Log.d(tag, " >scheduled in ${remainingMs}ms")
         _handler.postDelayed(_runnable!!, remainingMs)
     }

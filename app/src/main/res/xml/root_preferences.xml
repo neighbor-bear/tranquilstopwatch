@@ -46,16 +46,6 @@
             app:min="40"
             android:max="100"/>
 
-        <SeekBarPreference
-            app:icon="@drawable/baseline_moving_24"
-            app:key="@string/stopwatch_movement_key"
-            app:title="@string/stopwatch_movement_title"
-            app:summary="@string/stopwatch_movement_summary"
-            app:defaultValue="@integer/default_stopwatch_movement"
-            app:showSeekBarValue="true"
-            app:min="0"
-            android:max="10"/>
-
     </PreferenceCategory>
 
     <PreferenceCategory
@@ -84,15 +74,30 @@
             android:max="20"/>
 
         <SeekBarPreference
-            app:icon="@drawable/baseline_compare_arrows_24"
-            app:key="@string/clock_movement_key"
-            app:title="@string/clock_movement_title"
-            app:summary="@string/clock_movement_summary"
-            app:defaultValue="@integer/default_clock_movement"
+            app:icon="@drawable/baseline_format_size_24"
+            app:key="@string/clock_size_key"
+            app:title="@string/clock_size_title"
+            app:defaultValue="@integer/default_clock_size"
+            app:showSeekBarValue="true"
+            app:min="40"
+            android:max="100"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/settings_global_customization_category"
+        app:layout="@layout/category">
+
+        <SeekBarPreference
+            app:icon="@drawable/baseline_moving_24"
+            app:key="@string/global_movement_key"
+            app:title="@string/global_movement_title"
+            app:summary="@string/global_movement_summary"
+            app:defaultValue="@integer/default_global_movement"
             app:showSeekBarValue="true"
             app:min="0"
             android:max="10"/>
 
-    </PreferenceCategory>
+        </PreferenceCategory>
 
 </PreferenceScreen>

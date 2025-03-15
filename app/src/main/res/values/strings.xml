@@ -11,6 +11,7 @@
 
     <string name="settings_stopwatch_customization_category">Stopwatch</string>
     <string name="settings_clock_customization_category">Clock</string>
+    <string name="settings_global_customization_category">Global</string>
 
     <string name="stopwatch_show_seconds_title">Display seconds</string>
     <string name="stopwatch_show_seconds_summary_off">Energy footprint: Best</string>
@@ -19,21 +20,20 @@
     <string name="stopwatch_font_thin_title">Thin font</string>
     <string name="stopwatch_opacity_title">Opacity</string>
     <string name="stopwatch_size_title">Size</string>
-    <string name="stopwatch_movement_title">Movement</string>
-    <string name="stopwatch_movement_summary">Make the stowatch move every minute</string>
 
     <string name="clock_enabled_title">Enabled</string>
     <string name="clock_font_thin_title">Thin font</string>
     <string name="clock_opacity_title">Opacity</string>
-    <string name="clock_movement_title">Movement</string>
-    <string name="clock_movement_summary">Make the clock move horizontally every minute</string>
+    <string name="clock_size_title">Size</string>
+
+    <string name="global_movement_title">Movement</string>
+    <string name="global_movement_summary">Make the content move every minute</string>
 
     <string name="usage_category_title">Usage</string>
     <string name="usage_category_version">Version</string>
 
     <string name="usage">Start/stop: tap\nReset: long tap</string>
-    <string name="version">1.0.0</string>
-    <string name="about_fragment_label"></string>
+    <string name="version">1.1.0</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <!--    <string name="next">Next</string>-->

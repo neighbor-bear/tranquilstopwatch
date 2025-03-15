@@ -10,13 +10,6 @@
 
     <include layout="@layout/main_content" android:id="@+id/content_main" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_clock"
-        android:name="tibarj.tranquilstopwatch.ClockFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:context=".StopwatchFragment" />
-
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/about_btn"
         android:layout_width="wrap_content"
