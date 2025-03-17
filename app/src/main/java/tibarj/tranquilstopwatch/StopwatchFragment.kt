@@ -30,7 +30,6 @@ class StopwatchFragment : Fragment() {
     private var _startedAt: Long = 0 // ms
     private var _anteriority: Long = 0 // ms, sum of all start-stop segments durations
     private var _showSeconds: Boolean = true
-    private var _showSecondsOnlyWhenStopped: Boolean = false
 
     // This property is only valid between onCreateView and onDestroyView.
     val binding get() = _binding!!
@@ -72,10 +71,6 @@ class StopwatchFragment : Fragment() {
         _showSeconds = pref.getBoolean(
             getString(R.string.stopwatch_show_seconds_key),
             resources.getBoolean(R.bool.default_stopwatch_show_seconds)
-        )
-        _showSecondsOnlyWhenStopped = pref.getBoolean(
-            getString(R.string.stopwatch_show_seconds_only_when_stopped_key),
-            resources.getBoolean(R.bool.default_stopwatch_show_seconds_only_when_stopped)
         )
 
         val fontFamily = "sans-serif" + if (pref.getBoolean(
@@ -204,14 +199,8 @@ class StopwatchFragment : Fragment() {
     private fun setClock(h: Int, m: Int, s: Int) {
         Log.d(tag, "setClock")
         _binding?.stopwatch?.text =
-            if (_showSeconds) {
-                if (!_showSecondsOnlyWhenStopped || !isStarted())
-                    getString(R.string.clock_h_mm_ss, h, m, s)
-                else
-                    getString(R.string.clock_h_mm_zz, h, m, "··")
-            } else {
-                getString(R.string.clock_h_mm, h, m)
-            }
+            if (_showSeconds) getString(R.string.clock_h_mm_ss, h, m, s)
+            else getString(R.string.clock_h_mm, h, m)
     }
 
     private fun setColor(@ColorRes color: Int) {
@@ -235,7 +224,6 @@ class StopwatchFragment : Fragment() {
         Log.d(tag, "  _startedAt=" + _startedAt.toString())
         Log.d(tag, "  _anteriority=" + _anteriority.toString())
         Log.d(tag, "  _showSeconds=" + _showSeconds.toString())
-        Log.d(tag, "  _showSecondsOnlyWhenStopped=" + _showSecondsOnlyWhenStopped.toString())
         Log.d(tag, "  isStarted=" + isStarted().toString())
         Log.d(tag, "}")
     }
@@ -248,7 +236,7 @@ class StopwatchFragment : Fragment() {
         Log.d(tag, "schedule")
         val elapsed = (_anteriority + System.currentTimeMillis() - _startedAt)
         // remaining ms time until next minute (10ms of safety)
-        val remainingMs = if (_showSeconds && !_showSecondsOnlyWhenStopped) 1_010 - elapsed % 1_000
+        val remainingMs = if (_showSeconds) 1_010 - elapsed % 1_000
             else 60_010 - elapsed % 60_000
         Log.d(tag, " >scheduled in ${remainingMs}ms")
         _handler.postDelayed(_runnable!!, remainingMs)

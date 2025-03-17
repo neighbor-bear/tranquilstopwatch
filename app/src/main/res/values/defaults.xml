@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="default_stopwatch_show_seconds">true</bool>
-    <bool name="default_stopwatch_show_seconds_only_when_stopped">false</bool>
     <bool name="default_stopwatch_font_thin">false</bool>
     <bool name="default_clock_enabled">true</bool>
     <bool name="default_clock_font_thin">false</bool>

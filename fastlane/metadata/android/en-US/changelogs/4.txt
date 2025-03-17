@@ -1,0 +1,1 @@
+Remove settings for the second display when the stopwatch is paused.

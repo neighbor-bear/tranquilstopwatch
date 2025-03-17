@@ -10,17 +10,7 @@
             app:icon="@drawable/baseline_hdr_strong_24"
             app:key="@string/stopwatch_show_seconds_key"
             app:title="@string/stopwatch_show_seconds_title"
-            app:summaryOff="@string/stopwatch_show_seconds_summary_off"
-            app:summaryOn="@string/stopwatch_show_seconds_summary_on"
             app:defaultValue="@bool/default_stopwatch_show_seconds" />
-
-        <SwitchPreferenceCompat
-            app:icon="@drawable/baseline_hdr_weak_24"
-            app:dependency="@string/stopwatch_show_seconds_key"
-            app:key="@string/stopwatch_show_seconds_only_when_stopped_key"
-            app:title="@string/stopwatch_show_seconds_only_when_stopped_title"
-            app:singleLineTitle="false"
-            app:defaultValue="@bool/default_stopwatch_show_seconds_only_when_stopped" />
 
         <SwitchPreferenceCompat
             app:icon="@drawable/baseline_line_weight_24"
