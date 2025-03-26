@@ -8,13 +8,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import tibarj.tranquilstopwatch.databinding.ClockFragmentBinding
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import kotlin.random.Random
 
 class ClockFragment : Fragment() {
     private val tag: String = "ClockFragment"
@@ -36,7 +34,6 @@ class ClockFragment : Fragment() {
         _runnable = Runnable {
             onTimerTick()
         }
-        initTapListeners()
         return binding.root
     }
 
@@ -88,14 +85,6 @@ class ClockFragment : Fragment() {
         super.onStop()
         if (isScheduled()) {
             unschedule()
-        }
-    }
-
-    private fun initTapListeners() {
-        Log.d(tag, "setTapListeners")
-        binding.panel.setOnClickListener {
-            Log.d(tag, "OnClickPanel")
-            (requireActivity() as MainActivity).showSettingsButton()
         }
     }
 

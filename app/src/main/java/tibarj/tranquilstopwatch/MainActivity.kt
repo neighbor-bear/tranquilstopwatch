@@ -21,10 +21,10 @@ class MainActivity : AppCompatActivity() {
     private val tag: String = "MainActivity"
     private lateinit var _binding: MainActivityBinding
     private var _runnableBtn: Runnable? = null
-    private val _handlerBtn = Handler(Looper.getMainLooper())
     private var _runnableMvt: Runnable? = null
+    private val _handlerBtn = Handler(Looper.getMainLooper())
     private val _handlerMvt = Handler(Looper.getMainLooper())
-    private var _movement: Int = 0
+    private var _displacement: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         loadPref()
         logState()
 
-        if (0 != _movement) {
+        if (0 != _displacement) {
             scheduleMvt()
         }
     }
@@ -112,7 +112,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showClock(show: Boolean) {
-        _binding.contentMain.fragmentClock.visibility = if (show) {
+        _binding.mainContent.fragmentClock.visibility = if (show) {
             View.VISIBLE
         } else {
             View.GONE
@@ -123,14 +123,14 @@ class MainActivity : AppCompatActivity() {
         Log.d(tag, "applyPref")
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
 
-        val movement = pref.getInt(
-            getString(R.string.global_movement_key),
-            resources.getInteger(R.integer.default_global_movement)
+        val displacement = pref.getInt(
+            getString(R.string.global_displacement_key),
+            resources.getInteger(R.integer.default_global_displacement)
         )
-        if (_movement != movement) {
-            Log.d(tag, "setMovement " + movement.toString())
-            _movement = movement
-            if (0 == _movement) {
+        if (_displacement != displacement) {
+            Log.d(tag, "setdisplacement " + displacement.toString())
+            _displacement = displacement
+            if (0 == _displacement) {
                 setMargins(0, 0)
             } else {
                 changeMargins()
@@ -149,11 +149,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initTapListeners() {
         Log.d(tag, "setTapListeners")
-        _binding.contentMain.spaceTop.setOnClickListener {
-            Log.d(tag, "OnClickPanel")
-            showSettingsButton()
-        }
-        _binding.contentMain.spaceBottom.setOnClickListener {
+        _binding.mainContent.panel.setOnClickListener {
             Log.d(tag, "OnClickPanel")
             showSettingsButton()
         }
@@ -161,20 +157,33 @@ class MainActivity : AppCompatActivity() {
 
     private fun changeMargins() {
         Log.d(tag, "changeMargins")
-        val limit = 10 * _movement
-        setMargins(Random.nextInt(-limit, limit + 1), Random.nextInt(-limit, limit + 1))
+
+        val content = _binding?.mainContent
+        val panelWidth = content?.panel?.width ?: 0
+        val panelHeight = content?.panel?.height ?: 0
+        val contentWidth = content?.content?.width ?: 0
+        val contentHeight = content?.content?.height ?: 0
+
+        val maxLeftMargin = if (0 != contentWidth) panelWidth - contentWidth else 0
+        val maxTopMargin = if (0 != contentHeight) panelHeight - contentHeight else 0
+
+        val ratio = _displacement.toDouble() /
+                (2.0 * resources.getInteger(R.integer.global_displacement_max).toDouble())
+        val hbound = (ratio * maxLeftMargin).toInt();
+        val vbound = (ratio * maxTopMargin).toInt();
+
+        setMargins(Random.nextInt(-hbound, hbound + 1), Random.nextInt(-vbound, vbound + 1))
     }
 
     private fun setMargins(h: Int, v: Int) {
-        Log.d(tag, "setMargins")
-        val layoutParams = (_binding?.contentMain?.mainContent?.layoutParams as? MarginLayoutParams)
+        Log.d(tag, "setMargins=(" + h.toString() + "," + v.toString() + ")")
+        val layoutParams = (_binding?.mainContent?.content?.layoutParams as? MarginLayoutParams)
         layoutParams?.setMargins(h, v, -h, -v)
-        _binding?.contentMain?.mainContent?.layoutParams = layoutParams
     }
 
     private fun logState() {
         Log.d(tag, "state={")
-        Log.d(tag, "  _movement=" + _movement.toString())
+        Log.d(tag, "  _displacement=" + _displacement.toString())
         Log.d(tag, "}")
     }
 }

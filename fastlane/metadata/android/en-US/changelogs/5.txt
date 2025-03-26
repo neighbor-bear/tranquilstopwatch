@@ -1,0 +1,2 @@
+Updated the screen burn-in setting description to make it more user-friendly.
+Enhanced screen burn-in protection by enabling full-screen displacement.

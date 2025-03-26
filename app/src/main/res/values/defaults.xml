@@ -8,5 +8,8 @@
     <integer name="default_stopwatch_size">60</integer>
     <integer name="default_clock_opacity">13</integer>
     <integer name="default_clock_size">60</integer>
-    <integer name="default_global_movement">0</integer>
+    <integer name="default_global_displacement">0</integer>
+
+    <integer name="global_displacement_min">0</integer>
+    <integer name="global_displacement_max">10</integer>
 </resources>

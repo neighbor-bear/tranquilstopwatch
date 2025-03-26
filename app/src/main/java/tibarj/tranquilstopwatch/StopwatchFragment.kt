@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.MarginLayoutParams
 import android.view.WindowManager
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -18,7 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import tibarj.tranquilstopwatch.databinding.StopwatchFragmentBinding
 import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 
 
 class StopwatchFragment : Fragment() {
@@ -120,18 +118,14 @@ class StopwatchFragment : Fragment() {
 
     private fun initTapListeners() {
         Log.d(tag, "setTapListeners")
-        binding.stopwatchParent.setOnClickListener {
+        binding.stopwatch.setOnClickListener {
             Log.d(tag, "OnClickTimeview")
             toggle()
         }
-        binding.stopwatchParent.setOnLongClickListener {
+        binding.stopwatch.setOnLongClickListener {
             Log.d(tag, "onLongClickTimeview")
             reset()
             true
-        }
-        binding.panel.setOnClickListener {
-            Log.d(tag, "OnClickPanel")
-            (requireActivity() as MainActivity).showSettingsButton()
         }
     }
 

@@ -8,5 +8,5 @@
     <string name="clock_font_thin_key">clock_font_thin_key</string>
     <string name="clock_opacity_key">clock_opacity_key</string>
     <string name="clock_size_key">clock_size_key</string>
-    <string name="global_movement_key">global_movement_key</string>
+    <string name="global_displacement_key">global_movement_key</string>
 </resources>

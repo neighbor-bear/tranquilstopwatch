@@ -80,13 +80,13 @@
 
         <SeekBarPreference
             app:icon="@drawable/baseline_moving_24"
-            app:key="@string/global_movement_key"
-            app:title="@string/global_movement_title"
-            app:summary="@string/global_movement_summary"
-            app:defaultValue="@integer/default_global_movement"
+            app:key="@string/global_displacement_key"
+            app:title="@string/global_displacement_title"
+            app:summary="@string/global_displacement_summary"
+            app:defaultValue="@integer/default_global_displacement"
             app:showSeekBarValue="true"
-            app:min="0"
-            android:max="10"/>
+            app:min="@integer/global_displacement_min"
+            android:max="@integer/global_displacement_max"/>
 
         </PreferenceCategory>
 
