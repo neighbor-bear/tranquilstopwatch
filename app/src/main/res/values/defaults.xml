@@ -12,4 +12,6 @@
 
     <integer name="global_displacement_min">0</integer>
     <integer name="global_displacement_max">10</integer>
+    <integer name="global_displacement_delay_ms">60000</integer>
+    <integer name="global_buttons_delay_ms">5000</integer>
 </resources>

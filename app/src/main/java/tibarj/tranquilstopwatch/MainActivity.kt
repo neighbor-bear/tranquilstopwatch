@@ -92,7 +92,8 @@ class MainActivity : AppCompatActivity() {
         }
         _binding.settingsBtn.show()
         _binding.aboutBtn.show()
-        _handlerBtn.postDelayed(_runnableBtn!!, 5000)
+        val delay = resources.getInteger(R.integer.global_buttons_delay_ms)
+        _handlerBtn.postDelayed(_runnableBtn!!, delay.toLong())
     }
 
     private fun isMvtScheduled(): Boolean {
@@ -100,8 +101,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun scheduleMvt() {
-        Log.d(tag, " >mvt scheduled in 60s")
-        _handlerMvt.postDelayed(_runnableMvt!!, 60000)
+        val delay = resources.getInteger(R.integer.global_displacement_delay_ms)
+        Log.d(tag, " >mvt scheduled in " + delay.toString() + "ms")
+        _handlerMvt.postDelayed(_runnableMvt!!, delay.toLong())
     }
 
     private fun unscheduleMvt() {
@@ -169,8 +171,8 @@ class MainActivity : AppCompatActivity() {
 
         val ratio = _displacement.toDouble() /
                 (2.0 * resources.getInteger(R.integer.global_displacement_max).toDouble())
-        val hbound = (ratio * maxLeftMargin).toInt();
-        val vbound = (ratio * maxTopMargin).toInt();
+        val hbound = (ratio * maxLeftMargin.toDouble()).toInt();
+        val vbound = (ratio * maxTopMargin.toDouble()).toInt();
 
         setMargins(Random.nextInt(-hbound, hbound + 1), Random.nextInt(-vbound, vbound + 1))
     }
@@ -179,6 +181,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(tag, "setMargins=(" + h.toString() + "," + v.toString() + ")")
         val layoutParams = (_binding?.mainContent?.content?.layoutParams as? MarginLayoutParams)
         layoutParams?.setMargins(h, v, -h, -v)
+        _binding?.mainContent?.content?.layoutParams = layoutParams
     }
 
     private fun logState() {
