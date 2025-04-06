@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="default_stopwatch_show_seconds">true</bool>
-    <bool name="default_stopwatch_font_thin">false</bool>
+    <bool name="default_stopwatch_font_thin">true</bool>
     <bool name="default_clock_enabled">true</bool>
-    <bool name="default_clock_font_thin">false</bool>
+    <bool name="default_clock_font_thin">true</bool>
     <integer name="default_stopwatch_opacity">13</integer>
     <integer name="default_stopwatch_size">60</integer>
     <integer name="default_clock_opacity">13</integer>
