@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">宁静秒表</string>
+    <!--    <string name="action_settings">设置</string>-->
+    <string name="first_fragment_label"></string>
+    <string name="actionbar_about">关于</string>
+    <string name="clock_hh_mm">%1$s:%2$s</string>
+    <string name="clock_h_mm">%1$d:%2$02d</string>
+    <string name="clock_h_mm_ss">%1$d:%2$02d:%3$02d</string>
+
+    <string name="actionbar_settings">设置</string>
+
+    <string name="about_placeholder">关于</string>
+    <string name="settings_placeholder">设置</string>
+
+    <string name="settings_stopwatch_customization_category">Stopwatch</string>
+    <string name="settings_clock_customization_category">时钟</string>
+    <string name="settings_global_customization_category">屏幕保护</string>
+
+    <string name="stopwatch_show_seconds_title">显示秒数</string>
+    <string name="stopwatch_font_thin_title">细字体</string>
+    <string name="stopwatch_opacity_title">不透明度</string>
+    <string name="stopwatch_size_title">尺寸</string>
+
+    <string name="clock_enabled_title">启用</string>
+    <string name="clock_font_thin_title">细字体</string>
+    <string name="clock_opacity_title">不透明度</string>
+    <string name="clock_size_title">尺寸</string>
+
+    <string name="global_displacement_title">屏幕老化保护</string>
+    <string name="global_displacement_summary">内容每分钟移动一次</string>
+
+    <string name="usage_category_title">说明</string>
+    <string name="usage_category_version">版本</string>
+
+    <string name="usage">开始/停止：点击\n重置：长按</string>
+    <string name="version">1.4.0</string>
+    <!--    <string name="next">Next</string>-->
+    <!--    <string name="previous">Previous</string>-->
+</resources>
