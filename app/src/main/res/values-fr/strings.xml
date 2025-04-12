@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Tranquil Stopwatch</string>
+    <!--    <string name="action_settings">Settings</string>-->
+    <string name="first_fragment_label"></string>
+    <string name="actionbar_about">À propos</string>
+
+    <string name="actionbar_settings">Paramètres</string>
+
+    <string name="about_placeholder">À propos</string>
+    <string name="settings_placeholder">Paramètres</string>
+
+    <string name="settings_stopwatch_customization_category">Stopwatch</string>
+    <string name="settings_clock_customization_category">Horloge</string>
+    <string name="settings_global_customization_category">Global</string>
+
+    <string name="stopwatch_show_seconds_title">Afficher les secondes</string>
+    <string name="stopwatch_font_thin_title">Police fine</string>
+    <string name="stopwatch_opacity_title">Opacité</string>
+    <string name="stopwatch_size_title">Taille</string>
+
+    <string name="clock_enabled_title">Activé</string>
+    <string name="clock_font_thin_title">Police fine</string>
+    <string name="clock_opacity_title">Opacité</string>
+    <string name="clock_size_title">Taille</string>
+
+    <string name="global_displacement_title">Protection contre les brûlures d\'écran</string>
+    <string name="global_displacement_summary">Le contenu se déplace, chaque minute, avec une amplitude proportionnelle à cette valeur</string>
+
+    <string name="usage_category_title">Utilisation</string>
+    <string name="usage_category_version">Version</string>
+
+    <string name="usage">Démarrer/arrêter: appui court\nRéinitialiser: appui long</string>
+    <!--    <string name="next">Next</string>-->
+    <!--    <string name="previous">Previous</string>-->
+</resources>
