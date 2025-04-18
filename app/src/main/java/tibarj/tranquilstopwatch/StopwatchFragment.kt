@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -28,6 +27,7 @@ class StopwatchFragment : Fragment() {
     private var _startedAt: Long = 0 // ms
     private var _anteriority: Long = 0 // ms, sum of all start-stop segments durations
     private var _showSeconds: Boolean = true
+    private var _enabled: Boolean = true
 
     // This property is only valid between onCreateView and onDestroyView.
     val binding get() = _binding!!
@@ -66,6 +66,15 @@ class StopwatchFragment : Fragment() {
     private fun loadPref() {
         Log.d(tag, "applyPref")
         val pref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+
+        _enabled = pref.getBoolean(
+            getString(R.string.stopwatch_enabled_key),
+            resources.getBoolean(R.bool.default_stopwatch_enabled)
+        )
+        if (!_enabled && isStarted()) {
+            stop();
+        }
+
         _showSeconds = pref.getBoolean(
             getString(R.string.stopwatch_show_seconds_key),
             resources.getBoolean(R.bool.default_stopwatch_show_seconds)
@@ -204,13 +213,11 @@ class StopwatchFragment : Fragment() {
     }
 
     private fun keepScreenOn() {
-        Log.d(tag, "keepScreenOn")
-        requireActivity().window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        (requireActivity() as MainActivity).keepScreenOn()
     }
 
     private fun unkeepScreenOn() {
-        Log.d(tag, "unkeepScreenOn")
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        (requireActivity() as MainActivity).unkeepScreenOn()
     }
 
     private fun logState() {

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" translatable="false">
+    <string name="stopwatch_enabled_key">stopwatch_enabled</string>
     <string name="stopwatch_show_seconds_key">stopwatch_show_seconds</string>
     <string name="stopwatch_font_thin_key">stopwatch_font_thin_key</string>
     <string name="stopwatch_opacity_key">stopwatch_opacity_key</string>

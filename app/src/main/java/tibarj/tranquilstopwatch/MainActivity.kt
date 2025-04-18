@@ -7,6 +7,7 @@ import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -86,7 +87,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun showSettingsButton() {
-        Log.d(tag, " showSettingsButton")
+        Log.d(tag, "showSettingsButton")
         _runnableBtn?.let {
             _handlerBtn.removeCallbacks(it)
         }
@@ -96,11 +97,37 @@ class MainActivity : AppCompatActivity() {
         _handlerBtn.postDelayed(_runnableBtn!!, delay.toLong())
     }
 
+    fun keepScreenOn() {
+        Log.d(tag, "keepScreenOn")
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    fun unkeepScreenOn() {
+        Log.d(tag, "unkeepScreenOn")
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun showClock(show: Boolean) {
+        _binding.mainContent.fragmentClock.visibility = if (show) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+    }
+
+    private fun showStopwatch(show: Boolean) {
+        _binding.mainContent.fragmentStopwatch.visibility = if (show) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+    }
+
     private fun isMvtScheduled(): Boolean {
         return true == _runnableMvt?.let { _handlerMvt.hasCallbacks(it) }
     }
 
-    fun scheduleMvt() {
+    private fun scheduleMvt() {
         val delay = resources.getInteger(R.integer.global_displacement_delay_ms)
         Log.d(tag, " >mvt scheduled in " + delay.toString() + "ms")
         _handlerMvt.postDelayed(_runnableMvt!!, delay.toLong())
@@ -113,17 +140,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun showClock(show: Boolean) {
-        _binding.mainContent.fragmentClock.visibility = if (show) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-    }
-
     private fun loadPref() {
         Log.d(tag, "applyPref")
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
+
+        val clockEnabled = pref.getBoolean(
+            getString(R.string.clock_enabled_key),
+            resources.getBoolean(R.bool.default_clock_enabled)
+        )
+        showClock(clockEnabled)
+
+        val stopwatchEnabled = pref.getBoolean(
+            getString(R.string.stopwatch_enabled_key),
+            resources.getBoolean(R.bool.default_stopwatch_enabled)
+        )
+        showStopwatch(stopwatchEnabled)
+        if (stopwatchEnabled) {
+            unkeepScreenOn() // the flag is controlled by the stopwatch running state
+        } else {
+            keepScreenOn()
+        }
 
         val displacement = pref.getInt(
             getString(R.string.global_displacement_key),

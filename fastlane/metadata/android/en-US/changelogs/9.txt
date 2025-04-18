@@ -1,0 +1,1 @@
+Stopwatch can now be disabled

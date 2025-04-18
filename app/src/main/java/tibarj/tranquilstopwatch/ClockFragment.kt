@@ -41,6 +41,7 @@ class ClockFragment : Fragment() {
         Log.d(tag, "applyPref")
 
         val pref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
+
         _enabled = pref.getBoolean(
             getString(R.string.clock_enabled_key),
             resources.getBoolean(R.bool.default_clock_enabled)
@@ -77,7 +78,6 @@ class ClockFragment : Fragment() {
             display()
             schedule()
         }
-        (requireActivity() as MainActivity).showClock(_enabled)
     }
 
     override fun onStop() {

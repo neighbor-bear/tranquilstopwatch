@@ -13,6 +13,7 @@
     <string name="settings_clock_customization_category">Clock</string>
     <string name="settings_global_customization_category">Global</string>
 
+    <string name="stopwatch_enabled_title">Enabled</string>
     <string name="stopwatch_show_seconds_title">Display seconds</string>
     <string name="stopwatch_font_thin_title">Thin font</string>
     <string name="stopwatch_opacity_title">Opacity</string>

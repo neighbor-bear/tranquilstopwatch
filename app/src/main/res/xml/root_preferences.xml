@@ -7,6 +7,12 @@
         app:layout="@layout/category">
 
         <SwitchPreferenceCompat
+            app:icon="@drawable/baseline_watch_off_24"
+            app:key="@string/stopwatch_enabled_key"
+            app:title="@string/stopwatch_enabled_title"
+            app:defaultValue="@bool/default_stopwatch_enabled" />
+
+        <SwitchPreferenceCompat
             app:icon="@drawable/baseline_hdr_strong_24"
             app:key="@string/stopwatch_show_seconds_key"
             app:title="@string/stopwatch_show_seconds_title"

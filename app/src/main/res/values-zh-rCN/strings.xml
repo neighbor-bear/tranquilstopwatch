@@ -13,6 +13,7 @@
     <string name="settings_clock_customization_category">时钟</string>
     <string name="settings_global_customization_category">屏幕保护</string>
 
+    <string name="stopwatch_enabled_title">启用</string>
     <string name="stopwatch_show_seconds_title">显示秒数</string>
     <string name="stopwatch_font_thin_title">细字体</string>
     <string name="stopwatch_opacity_title">不透明度</string>
