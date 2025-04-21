@@ -155,11 +155,6 @@ class MainActivity : AppCompatActivity() {
             resources.getBoolean(R.bool.default_stopwatch_enabled)
         )
         showStopwatch(stopwatchEnabled)
-        if (stopwatchEnabled) {
-            unkeepScreenOn() // the flag is controlled by the stopwatch running state
-        } else {
-            keepScreenOn()
-        }
 
         val displacement = pref.getInt(
             getString(R.string.global_displacement_key),

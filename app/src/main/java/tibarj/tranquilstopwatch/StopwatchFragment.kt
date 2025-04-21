@@ -74,6 +74,11 @@ class StopwatchFragment : Fragment() {
         if (!_enabled && isStarted()) {
             stop();
         }
+        if (_enabled) {
+            unkeepScreenOn()
+        } else {
+            keepScreenOn()
+        }
 
         _showSeconds = pref.getBoolean(
             getString(R.string.stopwatch_show_seconds_key),
@@ -213,10 +218,12 @@ class StopwatchFragment : Fragment() {
     }
 
     private fun keepScreenOn() {
+        Log.d(tag, "keepScreenOn")
         (requireActivity() as MainActivity).keepScreenOn()
     }
 
     private fun unkeepScreenOn() {
+        Log.d(tag, "unkeepScreenOn")
         (requireActivity() as MainActivity).unkeepScreenOn()
     }
 
