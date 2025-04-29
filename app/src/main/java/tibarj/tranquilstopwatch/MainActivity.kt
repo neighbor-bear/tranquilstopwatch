@@ -1,12 +1,14 @@
 package tibarj.tranquilstopwatch
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.ViewTreeObserver
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private var _displacement: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(tag, "onCreate")
         super.onCreate(savedInstanceState)
 
         _binding = MainActivityBinding.inflate(layoutInflater)
@@ -49,21 +52,33 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
         setContentView(_binding.root)
 
-        _binding.aboutBtn.setOnClickListener {
+        _binding.aboutButton.setOnClickListener {
             startActivity(Intent(this, AboutActivity::class.java))
         }
-        _binding.settingsBtn.setOnClickListener {
+        _binding.settingsButton.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
         _runnableBtn = Runnable {
-            _binding.settingsBtn.hide()
-            _binding.aboutBtn.hide()
+            _binding.aboutButton.visibility = View.GONE
+            _binding.settingsButton.visibility = View.GONE
+        }
+        showButtons()
+        _binding.root.setOnClickListener {
+            showButtons()
         }
         _runnableMvt = Runnable {
             onMvtTimerTick()
         }
-        showButtons()
-        initTapListeners()
+
+        // center the content as soon as the panel is loaded
+        _binding.panel.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                // Remove the listener to prevent multiple calls
+                _binding.panel.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+
+                changeMargins()
+            }
+        })
     }
 
     // visible but not interactable
@@ -102,26 +117,18 @@ class MainActivity : AppCompatActivity() {
         _runnableBtn?.let {
             _handlerBtn.removeCallbacks(it)
         }
-        _binding.settingsBtn.show()
-        _binding.aboutBtn.show()
+        _binding.aboutButton.visibility = View.VISIBLE
+        _binding.settingsButton.visibility = View.VISIBLE
         val delay = resources.getInteger(R.integer.global_buttons_delay_ms)
         _handlerBtn.postDelayed(_runnableBtn!!, delay.toLong())
     }
 
     private fun showClock(show: Boolean) {
-        _binding.mainContent.fragmentClock.visibility = if (show) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
+        _binding.fragmentClock.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun showStopwatch(show: Boolean) {
-        _binding.mainContent.fragmentStopwatch.visibility = if (show) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
+        _binding.fragmentStopwatch.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun scheduleMvt() {
@@ -162,11 +169,6 @@ class MainActivity : AppCompatActivity() {
         if (_displacement != displacement) {
             Log.d(tag, "setDisplacement $displacement")
             _displacement = displacement
-            if (0 == _displacement) {
-                setMargins(0, 0)
-            } else {
-                changeMargins()
-            }
         }
     }
 
@@ -179,37 +181,37 @@ class MainActivity : AppCompatActivity() {
         scheduleMvt()
     }
 
-    private fun initTapListeners() {
-        Log.d(tag, "setTapListeners")
-        _binding.panel.setOnClickListener {
-            Log.d(tag, "OnClickPanel")
-            showButtons()
-        }
-    }
-
     private fun changeMargins() {
         Log.d(tag, "changeMargins")
 
-        val panelWidth = _binding.panel.width
-        val panelHeight = _binding.panel.height
-        val contentWidth = _binding.mainContent.content.width
-        val contentHeight = _binding.mainContent.content.height
+        val hToolbar: Int
+        val vToolbar: Int
+        when (resources.configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                hToolbar = 0
+                vToolbar = _binding.toolbar.height
+            }
+            else -> {
+                hToolbar = _binding.toolbar.width
+                vToolbar = 0
+            }
+        }
+        val hPanel = _binding.panel.width
+        val vPanel = _binding.panel.height
+        val hContent = _binding.content.width
+        val vContent = _binding.content.height
+        val hSpace = if (0 != hContent) hPanel - hContent - 2 * hToolbar else 0
+        val vSpace = if (0 != vContent) vPanel - vContent - 2 * vToolbar else 0
 
-        val hSpace = if (0 != contentWidth) panelWidth - contentWidth else 0
-        val vSpace = if (0 != contentHeight) panelHeight - contentHeight else 0
-
-        // y_max|y_min = +|- vSpace / 2 ??
-        // x_max|x_min = +|- hSpace / 2 ??
-        val ratio = _displacement.toDouble() / resources.getInteger(R.integer.global_displacement_max).toDouble()
+        // y_max|y_min = (vSpace / 2) * (1 +|- 1)
+        // x_max|x_min = (hSpace / 2) * (1 +|- 1)
+        val ratio = _displacement.toDouble() /
+                (2 * resources.getInteger(R.integer.global_displacement_max).toDouble())
         val hMax = (ratio * hSpace.toDouble()).toInt()
         val vMax = (ratio * vSpace.toDouble()).toInt()
-        val left = Random.nextInt(-hMax, hMax + 1)
-        val top = Random.nextInt(-vMax, vMax + 1)
+        val left = (hSpace.toDouble() / 2.0).toInt() + Random.nextInt(-hMax, hMax + 1)
+        val top = (vSpace.toDouble() / 2.0).toInt() + Random.nextInt(-vMax, vMax + 1)
 
-        Log.d(tag, "panelWidth $panelWidth")
-        Log.d(tag, "panelHeight $panelHeight")
-        Log.d(tag, "contentWidth $contentWidth")
-        Log.d(tag, "contentHeight $contentHeight")
         Log.d(tag, "hSpace $hSpace")
         Log.d(tag, "vSpace $vSpace")
         Log.d(tag, "ratio $ratio")
@@ -222,10 +224,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun setMargins(h: Int, v: Int) {
         Log.d(tag, "setMargins=($h,$v)")
-        val layoutParams = (_binding.mainContent.content.layoutParams as? MarginLayoutParams)
+        val layoutParams = (_binding.content.layoutParams as? MarginLayoutParams)
         layoutParams?.leftMargin = h
         layoutParams?.topMargin = v
-        _binding.mainContent.content.layoutParams = layoutParams
+        _binding.content.layoutParams = layoutParams
     }
 
     private fun logState() {
