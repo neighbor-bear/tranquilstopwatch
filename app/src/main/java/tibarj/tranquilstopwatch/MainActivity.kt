@@ -15,6 +15,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.preference.PreferenceManager
+import com.google.android.material.navigation.NavigationView
 import tibarj.tranquilstopwatch.databinding.MainActivityBinding
 import kotlin.random.Random
 
@@ -79,7 +80,31 @@ class MainActivity : AppCompatActivity() {
                 changeMargins()
             }
         })
+
+//        setupNavigationDrawer()
+//        _binding.navView.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener {
+//            _binding.drawer.closeDrawers()
+//            true
+//        })
     }
+
+//    private fun setupNavigationDrawer() {
+//        _binding.navView.setNavigationItemSelectedListener { menuItem ->
+//            when (menuItem.itemId) {
+//                R.id.nav_settings -> {
+//                    startActivity(Intent(this, SettingsActivity::class.java))
+//                    _binding.drawer.closeDrawers()
+//                    true
+//                }
+//                R.id.nav_about -> {
+//                    startActivity(Intent(this, AboutActivity::class.java))
+//                    _binding.drawer.closeDrawers()
+//                    true
+//                }
+//                else -> false
+//            }
+//        }
+//    }
 
     // visible but not interactable
     override fun onStart() {

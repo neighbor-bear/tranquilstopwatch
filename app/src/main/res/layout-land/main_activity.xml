@@ -1,99 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/root"
-    android:fitsSystemWindows="false"
     android:background="@color/black"
     tools:context="tibarj.tranquilstopwatch.MainActivity">
 
-    <LinearLayout
-        android:id="@+id/panel"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_height="match_parent"
-            android:layout_width="?attr/actionBarSize"
-            android:background="@android:color/transparent"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ImageButton
-                    android:id="@+id/about_button"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:contentDescription="@string/about_placeholder"
-                    android:background="@color/transparent"
-                    android:layout_gravity="top|start"
-                    android:layout_marginTop="@dimen/fab_margin"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="0dp"
-                    android:scaleType="fitCenter"
-                    android:layout_alignParentTop="true"
-                    android:src="@drawable/baseline_info_outline_24"
-                    app:tint="@color/material_dynamic_neutral70" />
-
-                <ImageButton
-                    android:id="@+id/settings_button"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:contentDescription="@string/settings_placeholder"
-                    android:background="@color/transparent"
-                    android:layout_gravity="bottom|start"
-                    android:layout_marginBottom="@dimen/fab_margin"
-                    android:paddingLeft="0dp"
-                    android:paddingRight="0dp"
-                    android:layout_alignParentBottom="true"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/baseline_settings_24"
-                    app:tint="@color/material_dynamic_neutral70" />
-            </RelativeLayout>
-        </androidx.appcompat.widget.Toolbar>
+        android:fitsSystemWindows="false">
 
         <LinearLayout
-            android:id="@+id/content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:id="@+id/panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fragment_clock"
-                android:name="tibarj.tranquilstopwatch.ClockFragment"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_height="match_parent"
+                android:layout_width="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/about_button"
+                        android:layout_width="?attr/actionBarSize"
+                        android:layout_height="?attr/actionBarSize"
+                        android:contentDescription="@string/about_placeholder"
+                        android:background="@color/transparent"
+                        android:layout_gravity="top|start"
+                        android:layout_marginTop="@dimen/fab_margin"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:scaleType="fitCenter"
+                        android:layout_alignParentTop="true"
+                        android:src="@drawable/baseline_info_outline_24"
+                        app:tint="@color/material_dynamic_neutral70" />
+
+                    <ImageButton
+                        android:id="@+id/settings_button"
+                        android:layout_width="?attr/actionBarSize"
+                        android:layout_height="?attr/actionBarSize"
+                        android:contentDescription="@string/settings_placeholder"
+                        android:background="@color/transparent"
+                        android:layout_gravity="bottom|start"
+                        android:layout_marginBottom="@dimen/fab_margin"
+                        android:paddingLeft="0dp"
+                        android:paddingRight="0dp"
+                        android:layout_alignParentBottom="true"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/baseline_settings_24"
+                        app:tint="@color/material_dynamic_neutral70" />
+                </RelativeLayout>
+            </androidx.appcompat.widget.Toolbar>
+
+            <LinearLayout
+                android:id="@+id/content"
+                android:orientation="vertical"
+                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:context=".ClockFragment"
-                tools:layout="@layout/clock_fragment" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/fragment_stopwatch"
-                android:name="tibarj.tranquilstopwatch.StopwatchFragment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:context=".StopwatchFragment"
-                tools:layout="@layout/stopwatch_fragment" />
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment_clock"
+                    android:name="tibarj.tranquilstopwatch.ClockFragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:context=".ClockFragment"
+                    tools:layout="@layout/clock_fragment" />
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:id="@+id/fragment_stopwatch"
+                    android:name="tibarj.tranquilstopwatch.StopwatchFragment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:context=".StopwatchFragment"
+                    tools:layout="@layout/stopwatch_fragment" />
+            </LinearLayout>
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_sym"
+                android:layout_height="match_parent"
+                android:layout_width="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            </androidx.appcompat.widget.Toolbar>
+
         </LinearLayout>
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar_sym"
-            android:layout_height="match_parent"
-            android:layout_width="?attr/actionBarSize"
-            android:background="@android:color/transparent"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-        </androidx.appcompat.widget.Toolbar>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-    </LinearLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:menu="@menu/menu_main" />
+</androidx.drawerlayout.widget.DrawerLayout>
