@@ -11,11 +11,11 @@ import android.view.ViewGroup.MarginLayoutParams
 import android.view.ViewTreeObserver
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.preference.PreferenceManager
-import com.google.android.material.navigation.NavigationView
 import tibarj.tranquilstopwatch.databinding.MainActivityBinding
 import kotlin.random.Random
 
@@ -51,20 +51,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         supportActionBar?.hide()
-        setContentView(_binding.root)
+        setContentView(_binding.drawer)
 
-        _binding.aboutButton.setOnClickListener {
-            startActivity(Intent(this, AboutActivity::class.java))
-        }
-        _binding.settingsButton.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
         _runnableBtn = Runnable {
-            _binding.aboutButton.visibility = View.GONE
-            _binding.settingsButton.visibility = View.GONE
+            _binding.menuButton.visibility = View.GONE
         }
         showButtons()
-        _binding.root.setOnClickListener {
+        _binding.main.setOnClickListener {
             showButtons()
         }
         _runnableMvt = Runnable {
@@ -81,30 +74,8 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-//        setupNavigationDrawer()
-//        _binding.navView.setNavigationItemSelectedListener(NavigationView.OnNavigationItemSelectedListener {
-//            _binding.drawer.closeDrawers()
-//            true
-//        })
+        initDrawer()
     }
-
-//    private fun setupNavigationDrawer() {
-//        _binding.navView.setNavigationItemSelectedListener { menuItem ->
-//            when (menuItem.itemId) {
-//                R.id.nav_settings -> {
-//                    startActivity(Intent(this, SettingsActivity::class.java))
-//                    _binding.drawer.closeDrawers()
-//                    true
-//                }
-//                R.id.nav_about -> {
-//                    startActivity(Intent(this, AboutActivity::class.java))
-//                    _binding.drawer.closeDrawers()
-//                    true
-//                }
-//                else -> false
-//            }
-//        }
-//    }
 
     // visible but not interactable
     override fun onStart() {
@@ -137,13 +108,39 @@ class MainActivity : AppCompatActivity() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
+    private fun initDrawer() {
+        Log.d(tag, "initDrawer")
+        _binding.menuButton.setOnClickListener {
+            if (_binding.drawer.isDrawerOpen(GravityCompat.END)) {
+                _binding.drawer.closeDrawer(GravityCompat.END)
+            } else {
+                _binding.drawer.openDrawer(GravityCompat.END)
+            }
+        }
+
+        _binding.navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_settings -> {
+                    startActivity(Intent(this, SettingsActivity::class.java))
+                    _binding.drawer.closeDrawer(GravityCompat.END)
+                    true
+                }
+                R.id.nav_about -> {
+                    startActivity(Intent(this, AboutActivity::class.java))
+                    _binding.drawer.closeDrawer(GravityCompat.END)
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
     private fun showButtons() {
         Log.d(tag, "showButtons")
         _runnableBtn?.let {
             _handlerBtn.removeCallbacks(it)
         }
-        _binding.aboutButton.visibility = View.VISIBLE
-        _binding.settingsButton.visibility = View.VISIBLE
+        _binding.menuButton.visibility = View.VISIBLE
         val delay = resources.getInteger(R.integer.global_buttons_delay_ms)
         _handlerBtn.postDelayed(_runnableBtn!!, delay.toLong())
     }
@@ -172,7 +169,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadPref() {
-        Log.d(tag, "applyPref")
+        Log.d(tag, "loadPref")
         val pref = PreferenceManager.getDefaultSharedPreferences(this)
 
         val clockEnabled = pref.getBoolean(
@@ -194,6 +191,7 @@ class MainActivity : AppCompatActivity() {
         if (_displacement != displacement) {
             Log.d(tag, "setDisplacement $displacement")
             _displacement = displacement
+            changeMargins()
         }
     }
 

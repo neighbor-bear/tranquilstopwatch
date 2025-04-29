@@ -1,0 +1,2 @@
+The menu has been redesigned for improved usability with one hand
+The app is now compatible with Android 8.1+

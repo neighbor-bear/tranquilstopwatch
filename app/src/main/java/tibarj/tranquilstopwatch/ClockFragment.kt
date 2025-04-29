@@ -39,7 +39,7 @@ class ClockFragment : Fragment() {
     }
 
     private fun loadPref() {
-        Log.d(tag, "applyPref")
+        Log.d(tag, "loadPref")
 
         val pref = PreferenceManager.getDefaultSharedPreferences(requireActivity())
 

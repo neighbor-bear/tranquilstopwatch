@@ -6,14 +6,16 @@
     android:id="@+id/drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
     android:background="@color/black"
     tools:context="tibarj.tranquilstopwatch.MainActivity">
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/root"
+        android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="false">
+        android:fitsSystemWindows="false"
+        android:background="@color/black">
 
         <LinearLayout
             android:id="@+id/panel"
@@ -26,38 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/transparent"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <ImageButton
-                        android:id="@+id/about_button"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:contentDescription="@string/actionbar_settings"
-                        android:background="@color/transparent"
-                        android:layout_gravity="top|start"
-                        android:layout_marginStart="@dimen/fab_margin"
-                        android:layout_alignParentStart="true"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/baseline_info_outline_24"
-                        app:tint="@color/material_dynamic_neutral70" />
-                    <ImageButton
-                        android:id="@+id/settings_button"
-                        android:layout_width="?attr/actionBarSize"
-                        android:layout_height="?attr/actionBarSize"
-                        android:contentDescription="@string/settings_placeholder"
-                        android:background="@color/transparent"
-                        android:layout_gravity="top|end"
-                        android:layout_marginEnd="@dimen/fab_margin"
-                        android:layout_alignParentEnd="true"
-                        android:scaleType="fitCenter"
-                        android:src="@drawable/baseline_settings_24"
-                        app:tint="@color/material_dynamic_neutral70" />
-                </RelativeLayout>
-            </androidx.appcompat.widget.Toolbar>
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -80,14 +51,16 @@
                         android:name="tibarj.tranquilstopwatch.ClockFragment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:context=".ClockFragment" />
+                        tools:context=".ClockFragment"
+                        tools:layout="@layout/clock_fragment" />
 
                     <androidx.fragment.app.FragmentContainerView
                         android:id="@+id/fragment_stopwatch"
                         android:name="tibarj.tranquilstopwatch.StopwatchFragment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:context=".StopwatchFragment" />
+                        tools:context=".StopwatchFragment"
+                        tools:layout="@layout/stopwatch_fragment" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -98,6 +71,23 @@
                 android:gravity="bottom"
                 android:background="@android:color/transparent"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/menu_button"
+                        android:layout_width="?attr/actionBarSize"
+                        android:layout_height="?attr/actionBarSize"
+                        android:contentDescription="@string/settings_placeholder"
+                        android:background="@android:color/transparent"
+                        android:layout_gravity="top|end"
+                        android:layout_marginEnd="@dimen/fab_margin"
+                        android:layout_alignParentEnd="true"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/baseline_menu_24"
+                        app:tint="@color/icon_white" />
+                </RelativeLayout>
             </androidx.appcompat.widget.Toolbar>
 
         </LinearLayout>
@@ -107,7 +97,10 @@
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
+        android:layout_height="120dp"
+        android:layout_gravity="end|bottom"
+        android:layoutDirection="rtl"
+        android:textDirection="rtl"
+        app:itemTextAppearance="@style/NavigationMenuText"
         app:menu="@menu/menu_main" />
 </androidx.drawerlayout.widget.DrawerLayout>
