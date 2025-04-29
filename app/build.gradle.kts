@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "tibarj.tranquilstopwatch"
-        minSdk = 30
+        minSdk = 27
         targetSdk = 36
         versionCode = 10
         versionName = "1.7.1"

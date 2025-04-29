@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     private var _runnableMvt: Runnable? = null
     private val _handlerBtn = Handler(Looper.getMainLooper())
     private val _handlerMvt = Handler(Looper.getMainLooper())
+    private var _isMvtScheduled = false
     private var _displacement: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,10 +49,10 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
         setContentView(_binding.root)
 
-        _binding.aboutBtn.setOnClickListener { view ->
+        _binding.aboutBtn.setOnClickListener {
             startActivity(Intent(this, AboutActivity::class.java))
         }
-        _binding.settingsBtn.setOnClickListener { view ->
+        _binding.settingsBtn.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
         _runnableBtn = Runnable {
@@ -61,7 +62,7 @@ class MainActivity : AppCompatActivity() {
         _runnableMvt = Runnable {
             onMvtTimerTick()
         }
-        showSettingsButton()
+        showButtons()
         initTapListeners()
     }
 
@@ -81,20 +82,9 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         Log.d(tag, "onStop")
         super.onStop()
-        if (isMvtScheduled()) {
+        if (_isMvtScheduled) {
             unscheduleMvt()
         }
-    }
-
-    fun showSettingsButton() {
-        Log.d(tag, "showSettingsButton")
-        _runnableBtn?.let {
-            _handlerBtn.removeCallbacks(it)
-        }
-        _binding.settingsBtn.show()
-        _binding.aboutBtn.show()
-        val delay = resources.getInteger(R.integer.global_buttons_delay_ms)
-        _handlerBtn.postDelayed(_runnableBtn!!, delay.toLong())
     }
 
     fun keepScreenOn() {
@@ -105,6 +95,17 @@ class MainActivity : AppCompatActivity() {
     fun unkeepScreenOn() {
         Log.d(tag, "unkeepScreenOn")
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun showButtons() {
+        Log.d(tag, "showButtons")
+        _runnableBtn?.let {
+            _handlerBtn.removeCallbacks(it)
+        }
+        _binding.settingsBtn.show()
+        _binding.aboutBtn.show()
+        val delay = resources.getInteger(R.integer.global_buttons_delay_ms)
+        _handlerBtn.postDelayed(_runnableBtn!!, delay.toLong())
     }
 
     private fun showClock(show: Boolean) {
@@ -123,13 +124,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isMvtScheduled(): Boolean {
-        return true == _runnableMvt?.let { _handlerMvt.hasCallbacks(it) }
-    }
-
     private fun scheduleMvt() {
         val delay = resources.getInteger(R.integer.global_displacement_delay_ms)
         Log.d(tag, " >mvt scheduled in " + delay.toString() + "ms")
+        _isMvtScheduled = true
         _handlerMvt.postDelayed(_runnableMvt!!, delay.toLong())
     }
 
@@ -137,6 +135,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(tag, "unscheduleMvt")
         _runnableMvt?.let {
             _handlerMvt.removeCallbacks(it)
+            _isMvtScheduled = false
         }
     }
 
@@ -161,7 +160,7 @@ class MainActivity : AppCompatActivity() {
             resources.getInteger(R.integer.default_global_displacement)
         )
         if (_displacement != displacement) {
-            Log.d(tag, "setdisplacement " + displacement.toString())
+            Log.d(tag, "setDisplacement $displacement")
             _displacement = displacement
             if (0 == _displacement) {
                 setMargins(0, 0)
@@ -182,42 +181,56 @@ class MainActivity : AppCompatActivity() {
 
     private fun initTapListeners() {
         Log.d(tag, "setTapListeners")
-        _binding.mainContent.panel.setOnClickListener {
+        _binding.panel.setOnClickListener {
             Log.d(tag, "OnClickPanel")
-            showSettingsButton()
+            showButtons()
         }
     }
 
     private fun changeMargins() {
         Log.d(tag, "changeMargins")
 
-        val content = _binding?.mainContent
-        val panelWidth = content?.panel?.width ?: 0
-        val panelHeight = content?.panel?.height ?: 0
-        val contentWidth = content?.content?.width ?: 0
-        val contentHeight = content?.content?.height ?: 0
+        val panelWidth = _binding.panel.width
+        val panelHeight = _binding.panel.height
+        val contentWidth = _binding.mainContent.content.width
+        val contentHeight = _binding.mainContent.content.height
 
-        val maxLeftMargin = if (0 != contentWidth) panelWidth - contentWidth else 0
-        val maxTopMargin = if (0 != contentHeight) panelHeight - contentHeight else 0
+        val hSpace = if (0 != contentWidth) panelWidth - contentWidth else 0
+        val vSpace = if (0 != contentHeight) panelHeight - contentHeight else 0
 
-        val ratio = _displacement.toDouble() /
-                (2.0 * resources.getInteger(R.integer.global_displacement_max).toDouble())
-        val hbound = (ratio * maxLeftMargin.toDouble()).toInt();
-        val vbound = (ratio * maxTopMargin.toDouble()).toInt();
+        // y_max|y_min = +|- vSpace / 2 ??
+        // x_max|x_min = +|- hSpace / 2 ??
+        val ratio = _displacement.toDouble() / resources.getInteger(R.integer.global_displacement_max).toDouble()
+        val hMax = (ratio * hSpace.toDouble()).toInt()
+        val vMax = (ratio * vSpace.toDouble()).toInt()
+        val left = Random.nextInt(-hMax, hMax + 1)
+        val top = Random.nextInt(-vMax, vMax + 1)
 
-        setMargins(Random.nextInt(-hbound, hbound + 1), Random.nextInt(-vbound, vbound + 1))
+        Log.d(tag, "panelWidth $panelWidth")
+        Log.d(tag, "panelHeight $panelHeight")
+        Log.d(tag, "contentWidth $contentWidth")
+        Log.d(tag, "contentHeight $contentHeight")
+        Log.d(tag, "hSpace $hSpace")
+        Log.d(tag, "vSpace $vSpace")
+        Log.d(tag, "ratio $ratio")
+        Log.d(tag, "hMax $hMax")
+        Log.d(tag, "vMax $vMax")
+        Log.d(tag, "left $left")
+        Log.d(tag, "top $top")
+        setMargins(left, top)
     }
 
     private fun setMargins(h: Int, v: Int) {
-        Log.d(tag, "setMargins=(" + h.toString() + "," + v.toString() + ")")
-        val layoutParams = (_binding?.mainContent?.content?.layoutParams as? MarginLayoutParams)
-        layoutParams?.setMargins(h, v, -h, -v)
-        _binding?.mainContent?.content?.layoutParams = layoutParams
+        Log.d(tag, "setMargins=($h,$v)")
+        val layoutParams = (_binding.mainContent.content.layoutParams as? MarginLayoutParams)
+        layoutParams?.leftMargin = h
+        layoutParams?.topMargin = v
+        _binding.mainContent.content.layoutParams = layoutParams
     }
 
     private fun logState() {
         Log.d(tag, "state={")
-        Log.d(tag, "  _displacement=" + _displacement.toString())
+        Log.d(tag, "  _displacement=$_displacement")
         Log.d(tag, "}")
     }
 }
