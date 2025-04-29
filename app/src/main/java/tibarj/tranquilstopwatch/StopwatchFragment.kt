@@ -30,7 +30,7 @@ class StopwatchFragment : Fragment() {
     private var _enabled: Boolean = true
 
     // This property is only valid between onCreateView and onDestroyView.
-    val binding get() = _binding!!
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,7 +52,7 @@ class StopwatchFragment : Fragment() {
         return binding.root
     }
 
-    fun saveInstanceState() {
+    private fun saveInstanceState() {
         Log.d(tag, "saveInstanceState")
 
         with(_sharedPreferences.edit()) {
@@ -72,7 +72,7 @@ class StopwatchFragment : Fragment() {
             resources.getBoolean(R.bool.default_stopwatch_enabled)
         )
         if (!_enabled && isStarted()) {
-            stop();
+            stop()
         }
         if (_enabled) {
             unkeepScreenOn()
@@ -89,18 +89,18 @@ class StopwatchFragment : Fragment() {
             getString(R.string.stopwatch_font_thin_key),
             resources.getBoolean(R.bool.default_stopwatch_font_thin)
         )) "-thin" else ""
-        Log.d(tag, "setFontFamily " + fontFamily)
+        Log.d(tag, "setFontFamily $fontFamily")
         binding.stopwatch.typeface = Typeface.create(fontFamily, Typeface.NORMAL)
 
         val opacity = pref.getInt(
             getString(R.string.stopwatch_opacity_key),
             resources.getInteger(R.integer.default_stopwatch_opacity)
         )
-        Log.d(tag, "setStopwatchOpacity " + opacity.toString())
+        Log.d(tag, "setStopwatchOpacity $opacity")
         binding.stopwatch.alpha = opacity.toFloat() / 20f
 
         val size = pref.getInt(getString(R.string.stopwatch_size_key), resources.getInteger(R.integer.default_stopwatch_size))
-        Log.d(tag, "setStopwatchSize " + size.toString())
+        Log.d(tag, "setStopwatchSize $size")
         binding.stopwatch.textSize = size.toFloat()
     }
 
@@ -133,11 +133,11 @@ class StopwatchFragment : Fragment() {
     private fun initTapListeners() {
         Log.d(tag, "setTapListeners")
         binding.stopwatch.setOnClickListener {
-            Log.d(tag, "OnClickTimeview")
+            Log.d(tag, "OnClickStopwatch")
             toggle()
         }
         binding.stopwatch.setOnLongClickListener {
-            Log.d(tag, "onLongClickTimeview")
+            Log.d(tag, "onLongClickStopwatch")
             reset()
             true
         }
@@ -229,16 +229,12 @@ class StopwatchFragment : Fragment() {
 
     private fun logState() {
         Log.d(tag, "state={")
-        Log.d(tag, "  _startedAt=" + _startedAt.toString())
-        Log.d(tag, "  _anteriority=" + _anteriority.toString())
-        Log.d(tag, "  _showSeconds=" + _showSeconds.toString())
+        Log.d(tag, "  _startedAt=$_startedAt")
+        Log.d(tag, "  _anteriority=$_anteriority")
+        Log.d(tag, "  _showSeconds=$_showSeconds")
         Log.d(tag, "  isStarted=" + isStarted().toString())
         Log.d(tag, "}")
     }
-
-//    private fun isScheduled(): Boolean {
-//        return true == _runnable?.let { _handler.hasCallbacks(it) }
-//    }
 
     private fun schedule() {
         Log.d(tag, "schedule")

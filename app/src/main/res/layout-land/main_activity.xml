@@ -13,14 +13,14 @@
         android:id="@+id/panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="match_parent"
+            android:layout_width="?attr/actionBarSize"
             android:background="@android:color/transparent"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -30,23 +30,28 @@
                     android:id="@+id/about_button"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="?attr/actionBarSize"
-                    android:contentDescription="@string/actionbar_settings"
+                    android:contentDescription="@string/about_placeholder"
                     android:background="@color/transparent"
                     android:layout_gravity="top|start"
-                    android:layout_marginStart="@dimen/fab_margin"
-                    android:layout_alignParentStart="true"
+                    android:layout_marginTop="@dimen/fab_margin"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="0dp"
                     android:scaleType="fitCenter"
+                    android:layout_alignParentTop="true"
                     android:src="@drawable/baseline_info_outline_24"
                     app:tint="@color/material_dynamic_neutral70" />
+
                 <ImageButton
                     android:id="@+id/settings_button"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="?attr/actionBarSize"
                     android:contentDescription="@string/settings_placeholder"
                     android:background="@color/transparent"
-                    android:layout_gravity="top|end"
-                    android:layout_marginEnd="@dimen/fab_margin"
-                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginBottom="@dimen/fab_margin"
+                    android:paddingLeft="0dp"
+                    android:paddingRight="0dp"
+                    android:layout_alignParentBottom="true"
                     android:scaleType="fitCenter"
                     android:src="@drawable/baseline_settings_24"
                     app:tint="@color/material_dynamic_neutral70" />
@@ -54,42 +59,37 @@
         </androidx.appcompat.widget.Toolbar>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1">
+            android:id="@+id/content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <LinearLayout
-                android:id="@+id/content"
-                android:orientation="vertical"
-                android:gravity="center"
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_clock"
+                android:name="tibarj.tranquilstopwatch.ClockFragment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                tools:context=".ClockFragment"
+                tools:layout="@layout/clock_fragment" />
 
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/fragment_clock"
-                    android:name="tibarj.tranquilstopwatch.ClockFragment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:context=".ClockFragment" />
-
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/fragment_stopwatch"
-                    android:name="tibarj.tranquilstopwatch.StopwatchFragment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    tools:context=".StopwatchFragment" />
-            </LinearLayout>
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_stopwatch"
+                android:name="tibarj.tranquilstopwatch.StopwatchFragment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:context=".StopwatchFragment"
+                tools:layout="@layout/stopwatch_fragment" />
         </LinearLayout>
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar_sym"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:gravity="bottom"
+            android:layout_height="match_parent"
+            android:layout_width="?attr/actionBarSize"
             android:background="@android:color/transparent"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
         </androidx.appcompat.widget.Toolbar>

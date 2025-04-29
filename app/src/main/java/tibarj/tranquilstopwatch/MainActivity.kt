@@ -1,12 +1,14 @@
 package tibarj.tranquilstopwatch
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
+import android.view.ViewTreeObserver
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
@@ -25,9 +27,11 @@ class MainActivity : AppCompatActivity() {
     private var _runnableMvt: Runnable? = null
     private val _handlerBtn = Handler(Looper.getMainLooper())
     private val _handlerMvt = Handler(Looper.getMainLooper())
+    private var _isRunnableMvtScheduled = false
     private var _displacement: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d(tag, "onCreate")
         super.onCreate(savedInstanceState)
 
         _binding = MainActivityBinding.inflate(layoutInflater)
@@ -48,21 +52,33 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.hide()
         setContentView(_binding.root)
 
-        _binding.aboutBtn.setOnClickListener { view ->
+        _binding.aboutButton.setOnClickListener { _ ->
             startActivity(Intent(this, AboutActivity::class.java))
         }
-        _binding.settingsBtn.setOnClickListener { view ->
+        _binding.settingsButton.setOnClickListener { _ ->
             startActivity(Intent(this, SettingsActivity::class.java))
         }
         _runnableBtn = Runnable {
-            _binding.settingsBtn.hide()
-            _binding.aboutBtn.hide()
+            _binding.aboutButton.visibility = View.GONE
+            _binding.settingsButton.visibility = View.GONE
+        }
+        showButtons()
+        _binding.root.setOnClickListener {
+            showButtons()
         }
         _runnableMvt = Runnable {
             onMvtTimerTick()
         }
-        showSettingsButton()
-        initTapListeners()
+
+        // center the content as soon as the panel is loaded
+        _binding.panel.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                // Remove the listener to prevent multiple calls
+                _binding.panel.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+
+                changeMargins()
+            }
+        })
     }
 
     // visible but not interactable
@@ -81,20 +97,9 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         Log.d(tag, "onStop")
         super.onStop()
-        if (isMvtScheduled()) {
+        if (_isRunnableMvtScheduled) {
             unscheduleMvt()
         }
-    }
-
-    fun showSettingsButton() {
-        Log.d(tag, "showSettingsButton")
-        _runnableBtn?.let {
-            _handlerBtn.removeCallbacks(it)
-        }
-        _binding.settingsBtn.show()
-        _binding.aboutBtn.show()
-        val delay = resources.getInteger(R.integer.global_buttons_delay_ms)
-        _handlerBtn.postDelayed(_runnableBtn!!, delay.toLong())
     }
 
     fun keepScreenOn() {
@@ -107,29 +112,29 @@ class MainActivity : AppCompatActivity() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    private fun showClock(show: Boolean) {
-        _binding.mainContent.fragmentClock.visibility = if (show) {
-            View.VISIBLE
-        } else {
-            View.GONE
+    private fun showButtons() {
+        Log.d(tag, "showButtons")
+        _runnableBtn?.let {
+            _handlerBtn.removeCallbacks(it)
         }
+        _binding.aboutButton.visibility = View.VISIBLE
+        _binding.settingsButton.visibility = View.VISIBLE
+        val delay = resources.getInteger(R.integer.global_buttons_delay_ms)
+        _handlerBtn.postDelayed(_runnableBtn!!, delay.toLong())
+    }
+
+    private fun showClock(show: Boolean) {
+        _binding.fragmentClock.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun showStopwatch(show: Boolean) {
-        _binding.mainContent.fragmentStopwatch.visibility = if (show) {
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-    }
-
-    private fun isMvtScheduled(): Boolean {
-        return true == _runnableMvt?.let { _handlerMvt.hasCallbacks(it) }
+        _binding.fragmentStopwatch.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun scheduleMvt() {
         val delay = resources.getInteger(R.integer.global_displacement_delay_ms)
         Log.d(tag, " >mvt scheduled in " + delay.toString() + "ms")
+        _isRunnableMvtScheduled = true
         _handlerMvt.postDelayed(_runnableMvt!!, delay.toLong())
     }
 
@@ -137,6 +142,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(tag, "unscheduleMvt")
         _runnableMvt?.let {
             _handlerMvt.removeCallbacks(it)
+            _isRunnableMvtScheduled = false
         }
     }
 
@@ -161,13 +167,8 @@ class MainActivity : AppCompatActivity() {
             resources.getInteger(R.integer.default_global_displacement)
         )
         if (_displacement != displacement) {
-            Log.d(tag, "setdisplacement " + displacement.toString())
+            Log.d(tag, "setDisplacement $displacement")
             _displacement = displacement
-            if (0 == _displacement) {
-                setMargins(0, 0)
-            } else {
-                changeMargins()
-            }
         }
     }
 
@@ -180,44 +181,58 @@ class MainActivity : AppCompatActivity() {
         scheduleMvt()
     }
 
-    private fun initTapListeners() {
-        Log.d(tag, "setTapListeners")
-        _binding.mainContent.panel.setOnClickListener {
-            Log.d(tag, "OnClickPanel")
-            showSettingsButton()
-        }
-    }
-
     private fun changeMargins() {
         Log.d(tag, "changeMargins")
 
-        val content = _binding?.mainContent
-        val panelWidth = content?.panel?.width ?: 0
-        val panelHeight = content?.panel?.height ?: 0
-        val contentWidth = content?.content?.width ?: 0
-        val contentHeight = content?.content?.height ?: 0
+        val hToolbar: Int
+        val vToolbar: Int
+        when (resources.configuration.orientation) {
+            Configuration.ORIENTATION_PORTRAIT -> {
+                hToolbar = 0
+                vToolbar = _binding.toolbar.height
+            }
+            else -> {
+                hToolbar = _binding.toolbar.width
+                vToolbar = 0
+            }
+        }
+        val hPanel = _binding.panel.width
+        val vPanel = _binding.panel.height
+        val hContent = _binding.content.width
+        val vContent = _binding.content.height
+        val hSpace = if (0 != hContent) hPanel - hContent - 2 * hToolbar else 0
+        val vSpace = if (0 != vContent) vPanel - vContent - 2 * vToolbar else 0
 
-        val maxLeftMargin = if (0 != contentWidth) panelWidth - contentWidth else 0
-        val maxTopMargin = if (0 != contentHeight) panelHeight - contentHeight else 0
-
+        // y_max|y_min = (vSpace / 2) * (1 +|- 1)
+        // x_max|x_min = (hSpace / 2) * (1 +|- 1)
         val ratio = _displacement.toDouble() /
-                (2.0 * resources.getInteger(R.integer.global_displacement_max).toDouble())
-        val hbound = (ratio * maxLeftMargin.toDouble()).toInt();
-        val vbound = (ratio * maxTopMargin.toDouble()).toInt();
+                (2 * resources.getInteger(R.integer.global_displacement_max).toDouble())
+        val hMax = (ratio * hSpace.toDouble()).toInt()
+        val vMax = (ratio * vSpace.toDouble()).toInt()
+        val left = (hSpace.toDouble() / 2.0).toInt() + Random.nextInt(-hMax, hMax + 1)
+        val top = (vSpace.toDouble() / 2.0).toInt() + Random.nextInt(-vMax, vMax + 1)
 
-        setMargins(Random.nextInt(-hbound, hbound + 1), Random.nextInt(-vbound, vbound + 1))
+        Log.d(tag, "hSpace $hSpace")
+        Log.d(tag, "vSpace $vSpace")
+        Log.d(tag, "ratio $ratio")
+        Log.d(tag, "hMax $hMax")
+        Log.d(tag, "vMax $vMax")
+        Log.d(tag, "left $left")
+        Log.d(tag, "top $top")
+        setMargins(left, top)
     }
 
     private fun setMargins(h: Int, v: Int) {
-        Log.d(tag, "setMargins=(" + h.toString() + "," + v.toString() + ")")
-        val layoutParams = (_binding?.mainContent?.content?.layoutParams as? MarginLayoutParams)
-        layoutParams?.setMargins(h, v, -h, -v)
-        _binding?.mainContent?.content?.layoutParams = layoutParams
+        Log.d(tag, "setMargins=($h,$v)")
+        val layoutParams = (_binding.content.layoutParams as? MarginLayoutParams)
+        layoutParams?.leftMargin = h
+        layoutParams?.topMargin = v
+        _binding.content.layoutParams = layoutParams
     }
 
     private fun logState() {
         Log.d(tag, "state={")
-        Log.d(tag, "  _displacement=" + _displacement.toString())
+        Log.d(tag, "  _displacement=$_displacement")
         Log.d(tag, "}")
     }
 }

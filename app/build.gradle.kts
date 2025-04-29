@@ -9,10 +9,10 @@ android {
 
     defaultConfig {
         applicationId = "tibarj.tranquilstopwatch"
-        minSdk = 30
+        minSdk = 27
         targetSdk = 36
         versionCode = 10
-        versionName = "1.7.1"
+        versionName = "1.8.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
