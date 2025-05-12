@@ -11,8 +11,8 @@ android {
         applicationId = "tibarj.tranquilstopwatch"
         minSdk = 27
         targetSdk = 36
-        versionCode = 10
-        versionName = "1.8.0"
+        versionCode = 12
+        versionName = "1.8.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
