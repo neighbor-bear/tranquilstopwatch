@@ -3,6 +3,42 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
+        app:title="@string/settings_clock_customization_category"
+        app:layout="@layout/category">
+
+        <SwitchPreferenceCompat
+            app:icon="@drawable/baseline_watch_off_24"
+            app:key="@string/clock_enabled_key"
+            app:title="@string/clock_enabled_title"
+            app:defaultValue="@bool/default_clock_enabled" />
+
+        <SwitchPreferenceCompat
+            app:icon="@drawable/baseline_line_weight_24"
+            app:key="@string/clock_font_thin_key"
+            app:title="@string/clock_font_thin_title"
+            app:defaultValue="@bool/default_clock_font_thin"/>
+
+        <SeekBarPreference
+            app:icon="@drawable/baseline_opacity_24"
+            app:key="@string/clock_opacity_key"
+            app:title="@string/clock_opacity_title"
+            app:defaultValue="@integer/default_clock_opacity"
+            app:showSeekBarValue="true"
+            app:min="1"
+            android:max="20"/>
+
+        <SeekBarPreference
+            app:icon="@drawable/baseline_format_size_24"
+            app:key="@string/clock_size_key"
+            app:title="@string/clock_size_title"
+            app:defaultValue="@integer/default_clock_size"
+            app:showSeekBarValue="true"
+            app:min="40"
+            android:max="100"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         app:title="@string/settings_stopwatch_customization_category"
         app:layout="@layout/category">
 
@@ -38,42 +74,6 @@
             app:key="@string/stopwatch_size_key"
             app:title="@string/stopwatch_size_title"
             app:defaultValue="@integer/default_stopwatch_size"
-            app:showSeekBarValue="true"
-            app:min="40"
-            android:max="100"/>
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        app:title="@string/settings_clock_customization_category"
-        app:layout="@layout/category">
-
-        <SwitchPreferenceCompat
-            app:icon="@drawable/baseline_watch_off_24"
-            app:key="@string/clock_enabled_key"
-            app:title="@string/clock_enabled_title"
-            app:defaultValue="@bool/default_clock_enabled" />
-
-        <SwitchPreferenceCompat
-            app:icon="@drawable/baseline_line_weight_24"
-            app:key="@string/clock_font_thin_key"
-            app:title="@string/clock_font_thin_title"
-            app:defaultValue="@bool/default_clock_font_thin"/>
-
-        <SeekBarPreference
-            app:icon="@drawable/baseline_opacity_24"
-            app:key="@string/clock_opacity_key"
-            app:title="@string/clock_opacity_title"
-            app:defaultValue="@integer/default_clock_opacity"
-            app:showSeekBarValue="true"
-            app:min="1"
-            android:max="20"/>
-
-        <SeekBarPreference
-            app:icon="@drawable/baseline_format_size_24"
-            app:key="@string/clock_size_key"
-            app:title="@string/clock_size_title"
-            app:defaultValue="@integer/default_clock_size"
             app:showSeekBarValue="true"
             app:min="40"
             android:max="100"/>

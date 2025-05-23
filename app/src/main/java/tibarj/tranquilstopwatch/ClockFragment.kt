@@ -2,8 +2,6 @@ package tibarj.tranquilstopwatch
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,10 +15,8 @@ import java.time.format.DateTimeFormatter
 class ClockFragment : Fragment() {
     private val tag: String = "ClockFragment"
     private var _binding: ClockFragmentBinding? = null
-    private var _runnable: Runnable? = null
-    private val _handler = Handler(Looper.getMainLooper())
-    private var _isScheduled = false
     private var _enabled: Boolean = true
+    private lateinit var _clock: Clock
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -32,9 +28,9 @@ class ClockFragment : Fragment() {
     ): View {
         Log.d(tag, "onCreateView")
         _binding = ClockFragmentBinding.inflate(inflater, container, false)
-        _runnable = Runnable {
-            onTimerTick()
-        }
+        _clock = Clock (
+            _tick = { display() },
+        )
         return binding.root
     }
 
@@ -77,16 +73,14 @@ class ClockFragment : Fragment() {
 
         if (_enabled) {
             display()
-            schedule()
+            _clock.start()
         }
     }
 
     override fun onStop() {
         Log.d(tag, "onStop")
         super.onStop()
-        if (_isScheduled) {
-            unschedule()
-        }
+        _clock.stop()
     }
 
     private fun display() {
@@ -101,31 +95,5 @@ class ClockFragment : Fragment() {
         Log.d(tag, "state={")
         Log.d(tag, "  _enabled=$_enabled")
         Log.d(tag, "}")
-    }
-
-    private fun schedule() {
-        Log.d(tag, "schedule")
-        // remaining ms time until next minute (10ms of safety)
-        val remainingMs = 60_010 - System.currentTimeMillis() % 60_000
-        Log.d(tag, " >scheduled in ${remainingMs}ms")
-        _isScheduled = true
-        _handler.postDelayed(_runnable!!, remainingMs)
-    }
-
-    private fun unschedule() {
-        Log.d(tag, "unschedule")
-        _runnable?.let {
-            _handler.removeCallbacks(it)
-            _isScheduled = false
-        }
-    }
-
-    private fun onTimerTick() {
-        Log.d(tag, "onTimerTick")
-        if (null === _binding) {
-            return
-        }
-        display()
-        schedule()
     }
 }

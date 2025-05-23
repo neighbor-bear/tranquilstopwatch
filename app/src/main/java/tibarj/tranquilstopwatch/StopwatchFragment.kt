@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,12 +20,8 @@ class StopwatchFragment : Fragment() {
     private val tag: String = "StopwatchFragment"
     private lateinit var _sharedPreferences: SharedPreferences
     private var _binding: StopwatchFragmentBinding? = null
-    private var _runnable: Runnable? = null
-    private val _handler = Handler(Looper.getMainLooper())
-    private var _startedAt: Long = 0 // ms
-    private var _anteriority: Long = 0 // ms, sum of all start-stop segments durations
-    private var _showSeconds: Boolean = true
     private var _enabled: Boolean = true
+    private lateinit var _stopwatch: Stopwatch
 
     // This property is only valid between onCreateView and onDestroyView.
     private val binding get() = _binding!!
@@ -42,22 +36,48 @@ class StopwatchFragment : Fragment() {
             "StopwatchFragment",
             Context.MODE_PRIVATE
         )
-        _startedAt = _sharedPreferences.getLong("startedAt", 0L)
-        _anteriority = _sharedPreferences.getLong("anteriority", 0L)
+        _stopwatch = Stopwatch (
+            _tick = { elapsed -> display(elapsed) },
+            _startedAt = _sharedPreferences.getLong("startedAt", 0L),
+            _anteriority = _sharedPreferences.getLong("anteriority", 0L),
+        )
         _binding = StopwatchFragmentBinding.inflate(inflater, container, false)
-        _runnable = Runnable {
-            onTimerTick()
-        }
         initTapListeners()
         return binding.root
+    }
+
+    // visible but not interactable
+    override fun onStart() {
+        Log.d(tag, "onStart")
+        super.onStart()
+
+        loadPref()
+        logState()
+
+        display(_stopwatch.getElapsedMs())
+        if (_stopwatch.isStarted()) {
+            keepScreenOn()
+            setColor(R.color.white)
+            _stopwatch.schedule()
+        } else {
+            setColor(R.color.red)
+        }
+    }
+
+    override fun onStop() {
+        Log.d(tag, "onStop")
+        super.onStop()
+
+        _stopwatch.unschedule()
+        unkeepScreenOn()
     }
 
     private fun saveInstanceState() {
         Log.d(tag, "saveInstanceState")
 
         with(_sharedPreferences.edit()) {
-            putLong("startedAt", _startedAt)
-            putLong("anteriority", _anteriority)
+            putLong("startedAt", _stopwatch.startedAt)
+            putLong("anteriority", _stopwatch.anteriority)
             apply()
         }
         logState()
@@ -71,7 +91,7 @@ class StopwatchFragment : Fragment() {
             getString(R.string.stopwatch_enabled_key),
             resources.getBoolean(R.bool.default_stopwatch_enabled)
         )
-        if (!_enabled && isStarted()) {
+        if (!_enabled && _stopwatch.isStarted()) {
             stop()
         }
         if (_enabled) {
@@ -80,15 +100,15 @@ class StopwatchFragment : Fragment() {
             keepScreenOn()
         }
 
-        _showSeconds = pref.getBoolean(
+        _stopwatch.everySecond = pref.getBoolean(
             getString(R.string.stopwatch_show_seconds_key),
             resources.getBoolean(R.bool.default_stopwatch_show_seconds)
         )
 
         val fontFamily = "sans-serif" + if (pref.getBoolean(
-            getString(R.string.stopwatch_font_thin_key),
-            resources.getBoolean(R.bool.default_stopwatch_font_thin)
-        )) "-thin" else ""
+                getString(R.string.stopwatch_font_thin_key),
+                resources.getBoolean(R.bool.default_stopwatch_font_thin)
+            )) "-thin" else ""
         Log.d(tag, "setFontFamily $fontFamily")
         binding.stopwatch.typeface = Typeface.create(fontFamily, Typeface.NORMAL)
 
@@ -104,32 +124,6 @@ class StopwatchFragment : Fragment() {
         binding.stopwatch.textSize = size.toFloat()
     }
 
-    // visible but not interactable
-    override fun onStart() {
-        Log.d(tag, "onStart")
-        super.onStart()
-
-        loadPref()
-        logState()
-
-        display()
-        if (isStarted()) {
-            keepScreenOn()
-            setColor(R.color.white)
-            schedule()
-        } else {
-            setColor(R.color.red)
-        }
-    }
-
-    override fun onStop() {
-        Log.d(tag, "onStop")
-        super.onStop()
-
-        unschedule()
-        unkeepScreenOn()
-    }
-
     private fun initTapListeners() {
         Log.d(tag, "setTapListeners")
         binding.stopwatch.setOnClickListener {
@@ -143,36 +137,29 @@ class StopwatchFragment : Fragment() {
         }
     }
 
-    private fun isStarted(): Boolean {
-        return 0L != _startedAt
-    }
-
     private fun start() {
         Log.d(tag, "start")
-        _startedAt = System.currentTimeMillis()
+        _stopwatch.start()
         saveInstanceState()
         keepScreenOn()
         setColor(R.color.white)
-        display()
-        schedule()
+        display(_stopwatch.getElapsedMs())
         this.logState()
     }
 
     private fun stop() {
         Log.d(tag, "stop")
-        unschedule()
-        _anteriority += System.currentTimeMillis() - _startedAt
-        _startedAt = 0L
+        _stopwatch.stop()
         saveInstanceState()
         unkeepScreenOn()
         setColor(R.color.red)
-        display() // show seconds because showing only when stopped
+        display(_stopwatch.getElapsedMs()) // to show seconds in case of showing only when stopped
         this.logState()
     }
 
     private fun toggle() {
         Log.d(tag, "toggle")
-        if (isStarted()) {
+        if (_stopwatch.isStarted()) {
             stop()
         } else {
             start()
@@ -181,21 +168,20 @@ class StopwatchFragment : Fragment() {
 
     private fun reset() {
         Log.d(tag, "reset")
-        unschedule()
-        _startedAt = 0L
-        _anteriority = 0L
+        _stopwatch.reset()
         saveInstanceState()
         unkeepScreenOn()
         setColor(R.color.red)
         setClock(0, 0, 0)
     }
 
-    private fun display() {
+    private fun display(elapsedMs: Long) {
         Log.d(tag, "display")
-        val elapsed = TimeUnit.MILLISECONDS.toSeconds(
-            _anteriority + if (isStarted()) System.currentTimeMillis() - _startedAt else 0L
-        )
-        Log.d(tag, " >elapsed=$elapsed")
+        if (null === _binding) {
+            return
+        }
+        val elapsed = TimeUnit.MILLISECONDS.toSeconds(elapsedMs)
+        Log.d(tag, "${elapsed}s elapsed")
 
         setClock(
             TimeUnit.SECONDS.toHours(elapsed).toInt(),
@@ -206,15 +192,12 @@ class StopwatchFragment : Fragment() {
 
     private fun setClock(h: Int, m: Int, s: Int) {
         Log.d(tag, "setClock")
-        _binding?.stopwatch?.text =
-            if (_showSeconds) getString(R.string.clock_h_mm_ss, h, m, s)
-            else getString(R.string.clock_h_mm, h, m)
+        _binding?.stopwatch?.text = if (_stopwatch.everySecond) getString(R.string.clock_h_mm_ss, h, m, s) else getString(R.string.clock_h_mm, h, m)
     }
 
     private fun setColor(@ColorRes color: Int) {
         Log.d(tag, "setColor")
-        val colorI = ContextCompat.getColor(requireActivity(), color)
-        _binding?.stopwatch?.setTextColor(colorI)
+        _binding?.stopwatch?.setTextColor(ContextCompat.getColor(requireActivity(), color))
     }
 
     private fun keepScreenOn() {
@@ -229,36 +212,10 @@ class StopwatchFragment : Fragment() {
 
     private fun logState() {
         Log.d(tag, "state={")
-        Log.d(tag, "  _startedAt=$_startedAt")
-        Log.d(tag, "  _anteriority=$_anteriority")
-        Log.d(tag, "  _showSeconds=$_showSeconds")
-        Log.d(tag, "  isStarted=" + isStarted().toString())
+        Log.d(tag, "  _startedAt=${_stopwatch.startedAt}")
+        Log.d(tag, "  _anteriority=${_stopwatch.anteriority}")
+        Log.d(tag, "  _showSeconds=${_stopwatch.everySecond}")
+        Log.d(tag, "  isStarted=" + _stopwatch.isStarted().toString())
         Log.d(tag, "}")
-    }
-
-    private fun schedule() {
-        Log.d(tag, "schedule")
-        val elapsed = (_anteriority + System.currentTimeMillis() - _startedAt)
-        // remaining ms time until next minute (10ms of safety)
-        val remainingMs = if (_showSeconds) 1_010 - elapsed % 1_000
-            else 60_010 - elapsed % 60_000
-        Log.d(tag, " >scheduled in ${remainingMs}ms")
-        _handler.postDelayed(_runnable!!, remainingMs)
-    }
-
-    private fun unschedule() {
-        Log.d(tag, "unschedule")
-        _runnable?.let {
-            _handler.removeCallbacks(it)
-        }
-    }
-
-    private fun onTimerTick() {
-        Log.d(tag, "onTimerTick")
-        if (null === _binding) {
-            return
-        }
-        display()
-        schedule()
     }
 }
