@@ -153,7 +153,8 @@ class StopwatchFragment : Fragment() {
         saveInstanceState()
         unkeepScreenOn()
         setColor(R.color.red)
-        display(_stopwatch.getElapsedMs()) // to show seconds in case of showing only when stopped
+        val elapsedMs = _stopwatch.getElapsedMs()
+        display(elapsedMs) // to show seconds in case of showing only when stopped
         this.logState()
     }
 
@@ -168,6 +169,14 @@ class StopwatchFragment : Fragment() {
 
     private fun reset() {
         Log.d(tag, "reset")
+
+        with(_sharedPreferences.edit()) {
+            putLong(
+                "runtime",
+                _sharedPreferences.getLong("runtime", 0L) + _stopwatch.getElapsedMs()
+            )
+            apply()
+        }
         _stopwatch.reset()
         saveInstanceState()
         unkeepScreenOn()

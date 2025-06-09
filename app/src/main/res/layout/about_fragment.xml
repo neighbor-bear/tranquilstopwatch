@@ -15,7 +15,7 @@
             android:id="@+id/textview_usage_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/usage_category_title"
+            android:text="@string/about_category_usage"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textAllCaps="true"
@@ -31,7 +31,7 @@
             android:id="@+id/textview_usage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/usage"
+            android:text="@string/about_usage"
             android:textSize="18sp"
             android:paddingStart="45dp"
             android:paddingEnd="5dp"
@@ -45,7 +45,7 @@
             android:id="@+id/textview_version_category"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/usage_category_version"
+            android:text="@string/about_category_version"
             android:textSize="18sp"
             android:textStyle="bold"
             android:textAllCaps="true"
@@ -66,9 +66,39 @@
             android:paddingBottom="20dp"
             android:text="@string/version"
             android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textview_version_category"
+            app:layout_constraintBottom_toTopOf="@+id/textview_stats_category" />
+
+        <TextView
+            android:id="@+id/textview_stats_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/about_category_stats"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:padding="16dp"
+            android:paddingStart="45dp"
+            android:paddingEnd="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textview_version"
+            app:layout_constraintBottom_toTopOf="@+id/textview_runtime" />
+
+        <TextView
+            android:id="@+id/textview_runtime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="45dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="20dp"
+            android:text=""
+            android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textview_version_category" />
+            app:layout_constraintTop_toBottomOf="@+id/textview_stats_category" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

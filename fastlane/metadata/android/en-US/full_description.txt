@@ -2,7 +2,7 @@ Tranquil Stopwatch is a reliable stopwatch designed for extended use with minima
 
 **Key Features:**
 
-- **Power Efficiency**: Optimized for long-duration use, with a black AMOLED-friendly screen and no milliseconds display to minimize power consumption.
+- **Power Efficiency**: Optimized for long-duration use, with a black AMOLED-friendly screen and no milliseconds display to minimize power consumption. Please note that this app operates without any background service.
 - **Reliability**: Ensures accurate timing without deviations, even during extended periods of use.
 - **Simple Operation**: Easily pause, resume, and reset the timer; no additional features like laps.
 - **Current Clock Display**: Shows the current time in addition to the stopwatch, perfect for sessions where constant interaction is not possible.

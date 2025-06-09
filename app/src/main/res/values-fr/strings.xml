@@ -27,10 +27,16 @@
     <string name="global_displacement_title">Protection contre les brûlures d\'écran</string>
     <string name="global_displacement_summary">Le contenu se déplace, chaque minute, avec une amplitude proportionnelle à cette valeur</string>
 
-    <string name="usage_category_title">Utilisation</string>
-    <string name="usage_category_version">Version</string>
+    <string name="about_category_usage">Utilisation</string>
+    <string name="about_category_version">Version</string>
+    <string name="about_category_stats">Stats</string>
 
-    <string name="usage">Démarrer/arrêter: appui court\nRéinitialiser: appui long</string>
+    <string name="about_usage">Démarrer/arrêter: appui court\nRéinitialiser: appui long</string>
+    <plurals name="about_runtime">
+        <item quantity="one">Durée d\'exécution totale : %d heure</item>
+        <item quantity="many">Durée d\'exécution totale : %d heures</item>
+        <item quantity="other">Durée d\'exécution totale : %d heures</item>
+    </plurals>
     <!--    <string name="next">Next</string>-->
     <!--    <string name="previous">Previous</string>-->
 </resources>

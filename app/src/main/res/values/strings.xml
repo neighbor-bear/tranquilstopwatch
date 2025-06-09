@@ -27,10 +27,15 @@
     <string name="global_displacement_title">Screen burn-in protection</string>
     <string name="global_displacement_summary">The content moves by this amount every minute</string>
 
-    <string name="usage_category_title">Usage</string>
-    <string name="usage_category_version">Version</string>
+    <string name="about_category_usage">Usage</string>
+    <string name="about_category_version">Version</string>
+    <string name="about_category_stats">Stats</string>
 
-    <string name="usage">Start/stop: tap\nReset: long tap</string>
+    <string name="about_usage">Start/stop: tap\nReset: long tap</string>
+    <plurals name="about_runtime">
+        <item quantity="one">Total runtime: %d hour</item>
+        <item quantity="other">Total runtime: %d hours</item>
+    </plurals>
     <!--    <string name="next">Next</string>-->
     <!--    <string name="previous">Previous</string>-->
 </resources>
